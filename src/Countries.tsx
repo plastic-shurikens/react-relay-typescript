@@ -1,9 +1,11 @@
 import React, {Suspense, useEffect} from "react";
 
 import { graphql } from "relay-runtime";
-import { useLazyLoadQuery, usePaginationFragment, usePreloadedQuery, useQueryLoader } from "react-relay";
+import { useLazyLoadQuery, usePreloadedQuery, useQueryLoader } from "react-relay";
+import type {CountriesCountriesQuery, CountriesCountriesQuery$data} from './__generated__/CountriesCountriesQuery.graphql';
 
-// Define a query
+// import graphql from "babel-plugin-relay/macro"; 
+
 const CountriesQuery = graphql`
   query CountriesCountriesQuery {
     continents {
@@ -22,19 +24,17 @@ const CountriesQuery = graphql`
   }
 `;
 
-
-//   handling the failure case here.
 function Countries({ preloadedQuery }) {
   console.log(preloadedQuery, 'pre')
-  const data = usePreloadedQuery(CountriesQuery, preloadedQuery);
+  const data : CountriesCountriesQuery$data = usePreloadedQuery<CountriesCountriesQuery>(CountriesQuery, preloadedQuery);
   console.log(data, 'd')
   return (
     <>
       <ul style={{ padding: 0, listStyle: "none", textIndent: 0, margin: 0 }}>
         {data.countries?.map(c => (
-          <li key={c.name}>
+          <li key={c?.name}>
             <p style={{ marginBottom: 0, textDecoration: "underline" }}>
-              {c.name}
+              {c?.name}
             </p>
           </li>
         ))}
@@ -48,9 +48,9 @@ export function CountriesPreloader() {
   console.log(queryRef, 'q')
 
   useEffect(()=> {
-    loadQuery()
+    loadQuery({variables: {}})
   }, [loadQuery])
-return (
+  return (
     <Suspense fallback='loading ....'>
       {queryRef !== null && (
         <Countries preloadedQuery={queryRef} />
@@ -59,5 +59,3 @@ return (
   )
  
 }
-
-// export default CountriesPreloader;
