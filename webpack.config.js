@@ -22,7 +22,7 @@ module.exports =
 //  return 
  [
 	{
-		// devtool: false,
+		devtool: false,
 		mode: process.env.DEV || 'production',
 		entry: './src/index.js',
 		devServer: {
@@ -104,7 +104,6 @@ module.exports =
 				},
 			]
 		},
-		devtool: 'inline-source-map',
 		devServer: {
 			static: './dist',
 		},
