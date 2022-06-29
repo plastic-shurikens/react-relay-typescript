@@ -3,16 +3,16 @@
     "module": "es2020",
     "target": "ES6",
     "jsx": "react",
-    // "allowSyntheticDefaultImports": true,
-    // "forceConsistentCasingInFileNames": true,
-    // "allowJs": false,
-    // "sourceMap": false,
-    // "strictNullChecks": true,
-    // "noEmit": true,
-    // "rootDir": "./",
-    // "skipLibCheck": true,
-    // "moduleResolution": "node",
-    // "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": false,
+    "sourceMap": false,
+    "strictNullChecks": true,
+    "noEmit": true,
+    "rootDir": "./",
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
     "lib":[
       "es2019",
       "dom"
@@ -20,6 +20,6 @@
   },
   "include":[
     "src/**/*",
-    // "globals.d.ts",
+    "globals.d.ts",
   ]
 }

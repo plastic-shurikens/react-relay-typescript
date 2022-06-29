@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const dotenv = require('dotenv')
 // .config({ path: __dirname + '/.env' })
 
-const Dotenvs = require('dotenv-webpack');
+// const Dotenvs = require('dotenv-webpack');
 
 // console.log(process.env.H)
 
@@ -28,9 +28,7 @@ module.exports =
 		devServer: {
 			hot: true,
 			port: 9000,
-			static: {
-				directory: path.join(__dirname, 'public'),
-			},
+			static: './dist',
 		},
 		output: {
 			filename: '[name].js',
@@ -51,7 +49,7 @@ module.exports =
 			// alias: {
 			// 	src: path.resolve(__dirname, 'src/'),
 			// },
-			extensions: ['.js', '.ts', '.tsx'],
+			extensions: ['.js', '.ts', '.tsx', '.mjs'],
 			
 		},
 		module:{
@@ -80,6 +78,11 @@ module.exports =
 	        test: /\.(txt|html)$/,
 	        use: 'raw-loader'
 	      },
+				{
+	        test: /\.mjs$/,
+	        include: /node_modules/,
+	        type: 'javascript/auto'
+	      },
 				// utils.filesRule()
 				
 				{
@@ -104,21 +107,21 @@ module.exports =
 				},
 			]
 		},
-		devServer: {
-			static: './dist',
-		},
+		// devServer: {
+		// 	static: './dist',
+		// },
 		optimization: {
 			runtimeChunk: 'single',
 		},
 		plugins:[
-				new Dotenvs(),
+				// new Dotenvs(),
 				new HtmlWebpackPlugin({
 					template: __dirname + '/public/index.html',
 					filename: 'index.html',
 					inject: 'body'
 				}),
 				new webpack.DefinePlugin({
-					process: 'process/browser',
+					process: {env: {}},
 					// path: 'path-browserify',
 					// 'process.env': JSON.stringify(process.env),
 					// 'process.type': JSON.stringify(process.type),
