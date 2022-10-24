@@ -1,11 +1,15 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const Dotenvs = require('dotenv-webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const autoprefixer = require('autoprefixer');
+
+// replace accordingly './.env' with the path of your .env file 
+require('dotenv').config({ path: './.env' }); 
 
 console.log(process.env.DEV)
 module.exports = [
 	{
-		devtool: 'inline-source-map', // change it to false for debugging purposes, cuz it increases bundle size
+		devtool: false, // change it to 'inline-source-map' only for debugging purposes, cuz it increases bundle size
 		mode: process.env.DEV || 'production',
 		entry: './src/index.js',
 		devServer: {
@@ -13,6 +17,7 @@ module.exports = [
 			port: 9000,
 			static: './dist',
 			compress: true,
+			historyApiFallback: true,
 		},
 		output: {
 			filename: '[name].js',
@@ -42,17 +47,46 @@ module.exports = [
 					test: /\.(scss|css)$/,
 					use: [
 						// Creates `style` nodes from JS strings
-						"style-loader",
+						MiniCssExtractPlugin.loader,
+						// "style-loader",
 						// Translates CSS into CommonJS
-						"css-loader",
+						{
+							loader: "css-loader",
+							options: {
+								importLoaders: 5,
+								modules:{
+									localIdentName: process.env.DEV !== 'development' ? '[hash:base64:5]' : '[name]__[local]--[hash:base64:5]',
+									mode: "global"
+								}
+		 					}
+						},
+						{
+							loader: "postcss-loader",
+							options: {
+								postcssOptions:{
+									parser: 'postcss-scss',
+									plugins: () => {
+										return [
+											autoprefixer({ browsers: 'last 2 versions' }),
+										]
+									}
+								}
+							}
+						},
 						// Compiles Sass to CSS
-						"sass-loader",
+						{
+							loader: "sass-loader",
+						},
 					]
 				},
-	      {
-	        test: /\.(txt|html)$/,
-	        use: 'raw-loader'
-	      },
+				{
+					test: /\.(png|svg|webp|jpg|jpeg|gif)$/i,
+					type: 'asset/resource',
+				},
+				{
+					test: /\.(txt|html)$/,
+					use: 'raw-loader'
+				},
 				{
 					test: /\.(ts|tsx|jsx|js)$/,
 					exclude: /node_modules/,
@@ -79,12 +113,15 @@ module.exports = [
 			runtimeChunk: 'single',
 		},
 		plugins:[
-			new Dotenvs(),
+			new webpack.DefinePlugin({
+				"process.env": JSON.stringify(process.env)
+			}),
 			new HtmlWebpackPlugin({
 				template: __dirname + '/public/index.html',
 				filename: 'index.html',
 				inject: 'body'
 			}),
+			new MiniCssExtractPlugin(),
 			new webpack.DefinePlugin({
 				// process: {env: {}},
 				// path: 'path-browserify',
